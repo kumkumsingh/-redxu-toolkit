@@ -1,19 +1,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 export const getPosts = createAsyncThunk("posts/getPosts", async () => {
-    return fetch("https://jsonplaceholder.typicode.com/posts").then((res) =>res.json())
+    try{
+        return fetch("https://jsonplaceholder.typicode.com/posts").then((res) =>res.json())
+    }
+    catch(err){
+      return err.message
+    }
 })
 
  const postSlice = createSlice({
-    name:"posts",
+    name:"posts1",
     initialState:{
         posts:[],
-        loading:false
+        loading:false,
+        error:null
     },
     extraReducers:{
         [getPosts.pending]: (state, action) =>{
-            state.loading = true;
-    
+            state.loading = true;    
         },
         [getPosts.fulfilled]: (state, action) =>{
             state.loading = false;
@@ -21,6 +26,7 @@ export const getPosts = createAsyncThunk("posts/getPosts", async () => {
         },
         [getPosts.rejected]: (state, action) =>{
             state.loading = false;
+            state.error = action.error.message
         }
 
     }
